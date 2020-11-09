@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "move-semantics", "move-semantics\move-semantics.vcxproj", "{30F5DA85-DC59-4586-BAC1-54357960E595}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "_ex-move-semantics", "_ex-move-semantics\_ex-move-semantics.vcxproj", "{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{30F5DA85-DC59-4586-BAC1-54357960E595}.Release|x64.Build.0 = Release|x64
 		{30F5DA85-DC59-4586-BAC1-54357960E595}.Release|x86.ActiveCfg = Release|Win32
 		{30F5DA85-DC59-4586-BAC1-54357960E595}.Release|x86.Build.0 = Release|Win32
+		{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}.Debug|x64.ActiveCfg = Debug|x64
+		{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}.Debug|x64.Build.0 = Debug|x64
+		{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}.Debug|x86.ActiveCfg = Debug|Win32
+		{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}.Debug|x86.Build.0 = Debug|Win32
+		{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}.Release|x64.ActiveCfg = Release|x64
+		{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}.Release|x64.Build.0 = Release|x64
+		{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}.Release|x86.ActiveCfg = Release|Win32
+		{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
