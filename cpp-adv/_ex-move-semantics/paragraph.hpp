@@ -28,6 +28,11 @@ namespace LegacyCode
             std::strcpy(buffer_, p.buffer_);
         }
 
+        Paragraph(Paragraph&& p) noexcept : buffer_(p.buffer_)
+        {
+            p.buffer_ = nullptr;
+        }
+
         Paragraph(const char* txt) : buffer_(new char[1024])
         {
             std::strcpy(buffer_, txt);
@@ -41,6 +46,20 @@ namespace LegacyCode
             return *this;
         }
 
+        Paragraph& operator=(Paragraph&& p) noexcept
+        {
+        	if (this != &p)
+        	{
+                delete[] buffer_;
+        		
+                buffer_ = p.buffer_;
+        		
+                p.buffer_ = nullptr;
+        	}
+
+            return *this;
+        }
+    	
         void set_paragraph(const char* txt)
         {
             std::strcpy(buffer_, txt);

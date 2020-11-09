@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <tuple>
+#include <memory>
 
 #include "catch.hpp"
 
@@ -111,7 +112,7 @@ public:
 		return *this;
 	}
 
-	Array(Array&& source) : size_{source.size_}, data_{source.data_} // transfer of state
+	Array(Array&& source) noexcept : size_{source.size_}, data_{source.data_} // transfer of state
 	{	
 		// set to resourceless state
 		source.size_ = 0; // optional
@@ -120,7 +121,7 @@ public:
 		std::cout << "Array(Array&& - move constructor)\n";
 	}
 
-	Array& operator=(Array&& source)
+	Array& operator=(Array&& source) noexcept
 	{
 		if (this != &source) // a = std::move(a) - self assignment protection
 		{
@@ -138,7 +139,7 @@ public:
 	}
 
 	// destructor
-	~Array()
+	~Array() noexcept
 	{
 		std::cout << "~Array()\n";
 		delete[] data_;
@@ -228,8 +229,14 @@ struct Data
 	std::string name;
 	Array data;
 
-	Data(int id, std::string n, Array d)
-		: id{ id }, name(std::move(n)), data(std::move(d))
+	//Data(int id, std::string n, Array d)
+	//	: id{ id }, name(std::move(n)), data(std::move(d))
+	//{
+	//}
+
+	template <typename TName, typename TArray>
+	Data(int id, TName&& name, TArray&& data)
+		: id{ id }, name(std::forward<TName>(name)), data(std::forward<TArray>(data))
 	{
 	}
 
@@ -250,7 +257,9 @@ struct Data
 
 TEST_CASE("Data - copy & move semantics")
 {
-	Data d1{ 1, "d1", {1, 2, 3} };
+	std::cout << "\n--------------------\n";
+
+	Data d1{ 1, "d1", Array{1, 2, 3} };
 	d1.print();
 
 	Data d2 = d1;
@@ -260,4 +269,130 @@ TEST_CASE("Data - copy & move semantics")
 	d3.print();
 
 	d1.print();
+}
+
+TEST_CASE("std::vector - move semantics")
+{
+	std::cout << "\n--------------------\n";
+
+	Array arr{ 1, 2, 3 };
+
+	std::vector<Array> vec;
+
+	vec.push_back(std::move(arr));
+	std::cout << "\n--------------------\n";
+	vec.push_back(Array{ 4, 5, 6 });
+	std::cout << "\n--------------------\n";
+	vec.emplace_back(std::initializer_list<int>{ 7, 8, 9 });
+	std::cout << "\n--------------------\n";
+	vec.emplace_back(std::initializer_list<int>{ 2, 1, 0 });
+	std::cout << "\n--------------------\n";
+	vec.push_back({ 56 });
+	std::cout << "\n--------------------\n";
+
+	Array target = std::move_if_noexcept(vec[0]);
+}
+
+struct Gadget
+{
+	std::string name;
+};
+
+void have_fun(Gadget& g)
+{
+	puts(__FUNCSIG__);
+	std::cout << "Having fun with " << g.name << "\n";
+}
+
+void have_fun(const Gadget& g)
+{
+	puts(__FUNCSIG__);
+	std::cout << "Having fun with " << g.name << "\n";
+}
+
+void have_fun(Gadget&& g)
+{
+	puts(__FUNCSIG__);
+	std::cout << "Having fun with " << g.name << "\n";
+}
+
+//void use(Gadget& g)
+//{
+//	puts(__FUNCSIG__);
+//	have_fun(g);
+//}
+//
+//void use(const Gadget& g)
+//{
+//	puts(__FUNCSIG__);
+//	have_fun(g);
+//}
+//
+//
+//void use(Gadget&& g)
+//{
+//	puts(__FUNCSIG__);
+//	have_fun(std::move(g));
+//}
+
+
+
+template <typename T>
+void use(T&& g)
+{
+	puts(__FUNCSIG__);
+	have_fun(std::forward<T>(g));
+}
+
+TEST_CASE("perfect forwarding")
+{
+	Gadget g{ "g" };
+	const Gadget cg{ "cg" };
+
+	use(g);
+	use(cg);
+	use(Gadget{ "temp gadget" });
+}
+
+TEST_CASE("auto")
+{
+	auto&& aref1 = 42; // int&&
+
+	int x = 665;
+	auto&& aref2 = x;  // int&
+}
+
+TEST_CASE("perfect forwarding - use cases")
+{
+	std::vector<Data> vec;
+
+	vec.emplace_back(1, "item1", Array{ 1, 2, 3 });
+	vec.emplace_back(2, "item2", Array{ 4, 5, 6 });
+
+	std::string text = "item3";
+	std::unique_ptr<Data> ptr1 = std::make_unique<Data>(3, text, Array{ 7, 7, 8 });
+	ptr1->print();	
+}
+
+
+using Row = Array;
+
+struct DataSet
+{
+	std::vector<Row> rows;
+
+	template <typename TRow>
+	void add(TRow&& r)
+	{
+		rows.emplace_back(std::forward<TRow>(r));
+	}
+};
+
+TEST_CASE("DataSet")
+{
+	std::cout << "\n==============================\n";
+
+	DataSet ds;
+
+	ds.add(Array{ 1, 2, 3 });
 }

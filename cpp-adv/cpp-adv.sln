@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "move-semantics", "move-sema
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "_ex-move-semantics", "_ex-move-semantics\_ex-move-semantics.vcxproj", "{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "constexpr", "constexpr\constexpr.vcxproj", "{14E4E4B8-2AF4-4986-9C83-85034FC5E422}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}.Release|x64.Build.0 = Release|x64
 		{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}.Release|x86.ActiveCfg = Release|Win32
 		{FFAAADD7-C5AC-4CAB-AAC3-9D969064DA3D}.Release|x86.Build.0 = Release|Win32
+		{14E4E4B8-2AF4-4986-9C83-85034FC5E422}.Debug|x64.ActiveCfg = Debug|x64
+		{14E4E4B8-2AF4-4986-9C83-85034FC5E422}.Debug|x64.Build.0 = Debug|x64
+		{14E4E4B8-2AF4-4986-9C83-85034FC5E422}.Debug|x86.ActiveCfg = Debug|Win32
+		{14E4E4B8-2AF4-4986-9C83-85034FC5E422}.Debug|x86.Build.0 = Debug|Win32
+		{14E4E4B8-2AF4-4986-9C83-85034FC5E422}.Release|x64.ActiveCfg = Release|x64
+		{14E4E4B8-2AF4-4986-9C83-85034FC5E422}.Release|x64.Build.0 = Release|x64
+		{14E4E4B8-2AF4-4986-9C83-85034FC5E422}.Release|x86.ActiveCfg = Release|Win32
+		{14E4E4B8-2AF4-4986-9C83-85034FC5E422}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
