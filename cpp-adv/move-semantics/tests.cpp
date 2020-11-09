@@ -111,6 +111,32 @@ public:
 		return *this;
 	}
 
+	Array(Array&& source) : size_{source.size_}, data_{source.data_} // transfer of state
+	{	
+		// set to resourceless state
+		source.size_ = 0; // optional
+		source.data_ = nullptr; // mandatory
+
+		std::cout << "Array(Array&& - move constructor)\n";
+	}
+
+	Array& operator=(Array&& source)
+	{
+		if (this != &source) // a = std::move(a) - self assignment protection
+		{
+			delete[] data_;
+
+			size_ = source.size_;
+			data_ = source.data_;
+
+			source.size_ = 0; // optional
+			source.data_ = nullptr; // mandatory
+		}
+		std::cout << "Array operator=(Array&& - move assignment)\n";
+
+		return *this;
+	}
+
 	// destructor
 	~Array()
 	{
@@ -164,11 +190,74 @@ bool operator==(const Array& lhs, const Array& rhs)
 	return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
+Array create_array()
+{
+	Array arr = { 1, 2, 3, 4, 5 };
+
+	for (auto& item : arr)
+		item *= 2;
+
+	return arr;
+}
+
 TEST_CASE("Array")
 {
-	Array arr = { 1, 2, 3 };
+	Array arr = create_array();
 
-	Array backup = arr;
+	Array other = std::move(arr); // move constructor
 
-	REQUIRE(backup == arr);
+	Array another = { 1, 2, 3 };
+
+	another = std::move(other); // move assignment
+
+	REQUIRE(another == Array{ 2, 4, 6, 8, 10 });
+
+	SECTION("move does not move")
+	{
+		const Array carr = { 1, 2, 3 };
+
+		Array target = std::move(carr);
+
+		REQUIRE(carr.size() == 3);
+	}
+}
+
+struct Data
+{
+	int id;
+	std::string name;
+	Array data;
+
+	Data(int id, std::string n, Array d)
+		: id{ id }, name(std::move(n)), data(std::move(d))
+	{
+	}
+
+	Data(const Data&) = default;
+	Data& operator=(const Data&) = default;
+	Data(Data&&) = default;
+	Data& operator=(Data&&) = default;
+	~Data() = default;
+
+	void print() const
+	{
+		std::cout << "Data(" << id << ", \"" << name << "\", [ ";
+		for (const auto& item : data)
+			std::cout << item << " ";
+		std::cout << "])\n";
+	}
+};
+
+TEST_CASE("Data - copy & move semantics")
+{
+	Data d1{ 1, "d1", {1, 2, 3} };
+	d1.print();
+
+	Data d2 = d1;
+	d2.print();
+
+	Data d3 = std::move(d1);
+	d3.print();
+
+	d1.print();
 }
