@@ -162,3 +162,4 @@ $RECYCLE.BIN/
 *.sublime-project
 doc_pl/_build/*
 doc_en/_build/*
+/cpp-adv/.vs/cpp-adv/v16
