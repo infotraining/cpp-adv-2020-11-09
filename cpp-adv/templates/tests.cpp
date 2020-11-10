@@ -313,3 +313,74 @@ TEST_CASE("Data")
 
     REQUIRE(d3.item.value().size() == 4);
 }
+
+template <typename T>
+struct RemoveReference
+{
+    using type = T;
+};
+
+template <typename T>
+struct RemoveReference<T&>
+{
+    using type = T;
+};
+
+template <typename T>
+using RemoveReference_t = typename RemoveReference<T>::type;
+
+TEST_CASE("trait definition")
+{
+    static_assert(is_same_v<RemoveReference_t<int>, int>);
+    static_assert(is_same_v<RemoveReference_t<int&>, int>);
+}
+
+template <typename TContainer>
+auto sum(const TContainer& container)
+{
+    using ResultT = std::remove_cv_t<std::remove_reference_t<decltype(*std::begin(container))>>;
+    ResultT result = ResultT();
+
+    for (const auto& item : container)
+        result += item;
+
+    return result;
+}
+
+TEST_CASE("sum - traits")
+{
+    vector vec = { 1, 2, 3, 4, 5 };
+
+    auto result = sum(vec);
+    REQUIRE(result == 15);
+}
+
+
+template <typename T1, typename T2, size_t N>
+void my_copy(T1(&source)[N], T2(&target)[N])
+{
+    if constexpr (std::is_same_v<T1, T2> && std::is_trivially_copyable_v<T1>)
+    {
+        memcpy(target, source, N * sizeof(T1));
+        std::cout << "memcpy()\n";
+    }
+    else
+    {
+        for (size_t i = 0; i < N; ++i)
+            target[i] = source[i];
+        std::cout << "copy using loop\n";
+    }    
+}
+
+
+TEST_CASE("copy - trait")
+{
+    int source[] = { 1, 2, 3 };
+
+    int dest1[3];
+    short dest2[3];
+
+    my_copy(source, dest1);
+
+    REQUIRE(std::equal(begin(source), end(source), begin(dest2)));
+}
